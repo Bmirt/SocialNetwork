@@ -118,10 +118,13 @@ router.post(
               dislike => dislike.user.toString() === req.user.id
             ).length > 0
           ) {
-            return res.status(400).json({
-              itisdisliked:
-                "User can't like post that he has disliked, undislike it first"
-            });
+            //Get remove index
+            const removeIndex = post.dislikes
+              .map(item => item.user.toString())
+              .indexOf(req.user.id);
+
+            //Splice out of array
+            post.dislikes.splice(removeIndex, 1);
           }
 
           //Add user id to likes array
@@ -193,11 +196,15 @@ router.post(
             post.likes.filter(like => like.user.toString() === req.user.id)
               .length > 0
           ) {
-            return res.status(400).json({
-              itisliked:
-                "User can't dislike post that he has liked, unlike it first"
-            });
+            //Get remove index
+            const removeIndex = post.likes
+              .map(item => item.user.toString())
+              .indexOf(req.user.id);
+
+            //Splice out of array
+            post.likes.splice(removeIndex, 1);
           }
+
           //Add user id to dislikes array
           post.dislikes.unshift({ user: req.user.id });
 
